@@ -260,9 +260,22 @@ function addingNewNumber(){    // funkcja mająca na celu stworzenie nowego elem
     moved = 0 // zerujemy moved
     clearningAllAdded() // zerujemy wszystkie elementy ze statusem added
     if (emptyCards.length == 1){ // Gdy wszyskie pola są zajęte sprawdzamy czy jest możliwość dodania jakiegokoliwek 
-        if (checkIfLose() == false){
-            setTimeout(() => {  alert('Odśwież by zacząć od nowa, \nTwój wynik: ' + score); }, 700); // jeżeli nie to wyskakuje alert z komunikatem i łącznym wynikiem
-            
+        if (checkIfLose() == false){ // jeżeli nie ma możliwości ruchu to uruchamia się poniższa funkcja
+            document.querySelector('.lose-screen').style.opacity = 0.8
+            document.getElementById('ending-score').innerHTML = score
+            document.getElementById('restart').style.visibility = 'visible'
+            document.getElementById('restart').addEventListener("click", function(){ // eventListener który uruchomi się gdy user będzie chciał rozpocząć grę od nowa
+                document.querySelector('.lose-screen').style.opacity = 0
+                for (i in allRows){
+                    for (k in allRows[i]){      
+                        allRows[i][k].removeChild(allRows[i][k].firstElementChild) // usuwamy wszystkie numery
+                    }
+                }
+                document.getElementById('restart').style.visibility = 'hidden'
+                score = 0                       
+                document.getElementById("score-board").innerHTML = score // zerujemy wynik
+                addingNewNumber()   //dodajemy nowy numer tak samo jak przy otwieraniu strony
+            })
         }              
     }
 }
@@ -270,26 +283,34 @@ function addingNewNumber(){    // funkcja mająca na celu stworzenie nowego elem
 var score = 0 // podliczanie sumy wszystkich dodawań 
 var moved = 0 // ma na celu sprawdzenie czy numery zostały poruszone i czy ma nastąpić dodanie nowego numeru 
 addingNewNumber() // po uruchumieniu gry tworzymy pierwszy element w randomowy sposób
+document.getElementById('hint-button').addEventListener("click", function(){
+    document.querySelector('.hint').style.visibility = 'hidden' // po kliknięciu "OK" hint znika 
+})
 document.addEventListener("keyup", (klawisz) => {
-    if (klawisz.key == "w"){
+    if (document.querySelector('.hint').style.visibility = 'visible' && klawisz.key == "w" || klawisz.key == "ArrowUp" || // jeżeli hint jest widoczne, a user kliknie jakikolwiek klawisz odpowiedzialny za grę to hint znika
+    klawisz.key == "s" || klawisz.key == "ArrowDown" || klawisz.key == "a" || klawisz.key == "ArrowLeft" ||
+    klawisz.key == "d" || klawisz.key == "ArrowRight"){
+        document.querySelector('.hint').style.visibility = 'hidden'
+    }
+    if (klawisz.key == "w" || klawisz.key == "ArrowUp"){
         onPressUp() // cała logika poruszania się przycisków jest umieszona w tej funkcji 
         if (moved == 1){
             addingNewNumber() // jeżeli jakikolwiek element zmienił swoją pozycje to nowy numer zostaje dodany i wszystkie added zostają wyzerowane
         }
     }
-    else if (klawisz.key == "s"){
+    else if (klawisz.key == "s" || klawisz.key == "ArrowDown"){
         onPressDown() 
         if (moved == 1){
             addingNewNumber()
         }  
     }
-    else if (klawisz.key == "a"){
+    else if (klawisz.key == "a" || klawisz.key == "ArrowLeft"){
         onPressLeft()
         if (moved == 1){
             addingNewNumber()
         }
     }
-    else if (klawisz.key == "d"){
+    else if (klawisz.key == "d" || klawisz.key == "ArrowRight"){
         onPressRight()
         if (moved == 1){
             addingNewNumber()
